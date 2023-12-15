@@ -94,10 +94,9 @@ public class ContactController {
     public void exportToBd() {
         if (!vContacts.isEmpty()) {
             vContacts.forEach(e -> contactDao.add(e));
-            new Alert(AlertType.WARNING,
-                    "If You have a contact that already in the database, the other fields are saved successfully")
-                    .show();
+            new Alert(AlertType.WARNING,"contacts saved in database successfully").show();
         }
+        new Alert(AlertType.WARNING,"you don't have any contacts").show();
     }
 
     public void disableFields(boolean enabled) {

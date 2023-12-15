@@ -31,20 +31,45 @@ public class ContactDao implements IDao <Contact>{
     @Override
     public void add(Contact contact) {
         try {
-            delete(contact);
-            ps = cnx.prepareStatement("insert into contact values(?,?,?,?)");
-            ps.setString(1, contact.email().get());
-            ps.setString(2, contact.name().get());
-            ps.setString(3, contact.telephone().get());
-            ps.setString(4, contact.address().get());
-            ps.executeUpdate();
+            if(!search(contact)){
+                ps = cnx.prepareStatement("insert into contact values(?,?,?,?)");
+                ps.setString(1, contact.email().get());
+                ps.setString(2, contact.name().get());
+                ps.setString(3, contact.telephone().get());
+                ps.setString(4, contact.address().get());
+                ps.executeUpdate();
+            }
+            else {
+                update(contact, contact);
+            }
         } catch (SQLException e) {}
+    }
+
+    public boolean search(Contact contact) {
+        try {
+            ps = cnx.prepareStatement("select * from contact where email = ?");
+            ps.setString(1, contact.email().get());
+            rs = ps.executeQuery();
+            if(rs.next())
+                return true;
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        return false;
     }
     
     @Override
     public void update(Contact contact, Contact newContact) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        try {
+            ps = cnx.prepareStatement("update contact set name = ?, telephone = ?, address = ? where email = ?");
+            ps.setString(1, newContact.name().get());
+            ps.setString(2, newContact.telephone().get());
+            ps.setString(3, newContact.address().get());
+            ps.setString(4, contact.email().get());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
     }
 
     public Vector<Contact> getAll() {
